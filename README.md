@@ -8,10 +8,18 @@ While the `dbf` code from that source compiles just fine, the underlying library
 This is a modified version of the library, that compiles.
 
 ### Compiling
+
 ```
 ./autogen.sh
 ./configure
 make
+```
+
+Custom compile for BBS files:
+
+```cmd
+cd src
+gcc -o dbf2csv -I.. -I../include dbf2csv.c dbf.c dbf_endian.c
 ```
 
 ### Installing
