@@ -1,8 +1,12 @@
+extern "C" {
 #include <libdbf/libdbf.h>
+}
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <iconv.h>
+
+#include "text400.h"
 
 int main(int argc, char *argv[]) {
 	FILE *fp = argc < 3 ? stdout : fopen(argv[2], "wb");
@@ -28,7 +32,7 @@ int main(int argc, char *argv[]) {
 	}
 	fputc('\n', fp);
 
-	for (int t = dbf_NumRows(db); t; t--) {
+	for (int t = dbf_NumRows(db) - 1; t >= 0; t--) {
 		dbf_ReadRecord(db, record, len);
 		// fprintf(fp, "%s\n", record);
 
@@ -43,7 +47,7 @@ int main(int argc, char *argv[]) {
 				_output = output;
 				iconv(cd, &_record, &_len, &_output, &_out_size);
 				*_output = 0;
-				fprintf(fp, "%s", output);
+				fprintf(fp, "%s", decode_cp437(output).c_str());
 
 			} else {
 				memcpy(output, _record, _len);

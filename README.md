@@ -9,7 +9,7 @@ This is a modified version of the library, that compiles.
 
 ### Compiling
 
-```
+```bash
 ./autogen.sh
 ./configure
 make
@@ -17,9 +17,19 @@ make
 
 Custom compile for BBS files:
 
-```cmd
+```bash
 cd src
-gcc -o dbf2csv -I.. -I../include dbf2csv.c dbf.c dbf_endian.c
+gcc -c -o dbf.o -I.. -I../include dbf.c
+gcc -c -o dbf_endian.o -I.. -I../include dbf_endian.c
+g++ -o dbf2csv dbf2csv.cpp cp437_to_utf8.cpp dbf.o dbf_endian.o
+```
+
+### Usage
+
+```bash
+./dbf2csv FILE.DBF 2>/dev/null
+# or
+./dbf2csv -o FILE.CSV FILE.DBF
 ```
 
 ### Installing
