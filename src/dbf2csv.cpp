@@ -5,8 +5,22 @@ extern "C" {
 #include <string.h>
 #include <stdlib.h>
 #include <iconv.h>
+#include <algorithm> 
 
 #include "text400.h"
+
+inline void ltrim(std::string &s) {
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+		return !std::isspace(ch);
+	}));
+}
+
+// trim from end (in place)
+inline void rtrim(std::string &s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+		return !std::isspace(ch);
+	}).base(), s.end());
+}
 
 int main(int argc, char *argv[]) {
 	FILE *fp = argc < 3 ? stdout : fopen(argv[2], "wb");
@@ -47,7 +61,10 @@ int main(int argc, char *argv[]) {
 				_output = output;
 				iconv(cd, &_record, &_len, &_output, &_out_size);
 				*_output = 0;
-				fprintf(fp, "%s", decode_cp437(output).c_str());
+				auto str = decode_cp437(output);
+				ltrim(str);
+				rtrim(str);
+				fprintf(fp, "%s", str.c_str());
 
 			} else {
 				memcpy(output, _record, _len);
